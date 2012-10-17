@@ -12,7 +12,6 @@ namespace Paralelismo
     {
         static void Main(string[] args)
         {
-
             List<Person> lista = PopulateTheList();
 
             Console.WriteLine("1 - LINQ without paralelism " + LinqWithoutParalelism(lista));
@@ -20,6 +19,13 @@ namespace Paralelismo
             Console.WriteLine("3 - Lambda without paralelism: " + LambdaWithoutParalelism(lista));
             Console.WriteLine("4 - Lambda with paralelism: " + LambdaWithParalelism(lista));
 
+            /* Comment the above line and run it again with this order
+            Console.WriteLine("3 - Lambda without paralelism: " + LambdaWithoutParalelism(lista));
+            Console.WriteLine("4 - Lambda with paralelism: " + LambdaWithParalelism(lista));
+            Console.WriteLine("1 - LINQ without paralelism " + LinqWithoutParalelism(lista));
+            Console.WriteLine("2 - LINQ with paralelism " + LinqWithParalelism(lista));
+
+             * */
 
             Console.ReadKey();
         }
@@ -41,11 +47,8 @@ namespace Paralelismo
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            IEnumerable listaComParalelismoLambda = lista.Where(n => n.Age > 18).
-                                                          Where(n => n.Age < 60).
-                                                          Where(n => n.Phone.StartsWith("11"))
-                                                          .AsParallel();
-
+            var listaComParalelismoLambda = lista.Where(n => n.Age > 18 && n.Age < 60 && n.Phone.StartsWith("11")).AsParallel();
+            var qtd = listaComParalelismoLambda.Count();
             sw.Stop();
 
             return sw.Elapsed;
@@ -57,9 +60,8 @@ namespace Paralelismo
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            IEnumerable listaComParalelismoLambda = lista.Where(n => n.Age > 18).
-                                                          Where(n => n.Age < 60).
-                                                          Where(n => n.Phone.StartsWith("11"));
+            var listaComParalelismoLambda = lista.Where(n => n.Age > 18 && n.Age < 60 && n.Phone.StartsWith("11"));
+            var qtd = listaComParalelismoLambda.Count();
             sw.Stop();
             return sw.Elapsed;
 
@@ -70,9 +72,10 @@ namespace Paralelismo
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            IEnumerable listaComParalelismoLinq = (from p in lista 
-                                                   where p.Age > 18 && p.Age < 60 && p.Phone.StartsWith("11")
-                                                   select p).AsParallel();
+            var listaComParalelismoLinq = (from p in lista
+                                           where p.Age > 18 && p.Age < 60 && p.Phone.StartsWith("11")
+                                           select p).AsParallel();
+            var qtd = listaComParalelismoLinq.Count();
             sw.Stop();
             return sw.Elapsed;
         }
@@ -81,9 +84,10 @@ namespace Paralelismo
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            IEnumerable listaSemParalelismoLinq = from p in lista
-                                                  where p.Age > 18 && p.Age < 60 && p.Phone.StartsWith("11")
-                                                  select p;
+            var listaSemParalelismoLinq = from p in lista
+                                          where p.Age > 18 && p.Age < 60 && p.Phone.StartsWith("11")
+                                          select p;
+            var qtd = listaSemParalelismoLinq.Count();
             sw.Stop();
             return sw.Elapsed;
         }
